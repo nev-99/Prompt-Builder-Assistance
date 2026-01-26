@@ -7,6 +7,6 @@ A simplified web application with basic functionality has started development.
 
 ## Features:
 
-1. Open the `index.html` file. 
-2. Load `nev_prompts_backup.json` to restore the cached data.
-3. Selecting the “Copy” button copies the post-build prompt to the clipboard. Follow the UI instructions for all other operations.
+1. Selecting the “Copy” button copies the post-build prompt to the clipboard. 
+2. Can load `nev_prompts_backup.json` to restore the cached data.
+3. Follow the UI instructions for all other operations.
