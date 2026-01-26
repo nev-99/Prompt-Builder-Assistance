@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PromptBuilderAssistance</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar {
+      width: 300px;
+      border-left: 1px solid #ccc;
+      padding: 12px;
+      box-sizing: border-box;
+      background: #fafafa;
+      overflow-y: auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-bottom: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 6px 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .spacer {
+      height: 12px;
+    }
+
+    .prompt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .prompt-text {
+      flex: 1;
+      margin-right: 8px;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .delete-btn {
+      color: #900;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      background: #f5f5f5;
+      padding: 12px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .danger {
+      color: #900;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main">
+    <h2>PromptBuilderAssistance (Prototype) by nev-99</h2>
+
+    <button id="resetAllTextBtn">Clear All Text Fields</button>
+
+    <h3>Base Prompt</h3>
+    <textarea id="basePrompt"></textarea>
+    <button id="resetBaseBtn">Clear Base Prompt</button>
+
+    <h3>Additional Text (Not Saved)</h3>
+    <textarea id="addonPrompt"></textarea>
+    <button id="resetAddonBtn">Clear Additional Text</button>
+
+    <div class="spacer"></div>
+
+    <button id="copyBtn">Copy</button>
+
+    <div id="resultArea" style="display:none;">
+      <div class="result-box">
+        <div class="message">
+          Copied to clipboard
+        </div>
+        <div id="resultText"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <h3>Saved Prompts</h3>
+
+    <button id="exportPromptsBtn">Export Cache to Local File</button>
+    <button id="importPromptsBtn">Import Cache</button>
+
+    <button id="clearPromptsBtn" class="danger">
+      Clear All Saved Prompts
+    </button>
+
+    <div id="promptList"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
