@@ -1,4 +1,4 @@
-// DOM references
+// ===== DOM =====
 const basePromptEl = document.getElementById("basePrompt");
 const addonPromptEl = document.getElementById("addonPrompt");
 const copyBtn = document.getElementById("copyBtn");
@@ -6,30 +6,77 @@ const resultArea = document.getElementById("resultArea");
 const resultText = document.getElementById("resultText");
 const promptListEl = document.getElementById("promptList");
 
-// Control buttons
 const resetBaseBtn = document.getElementById("resetBaseBtn");
 const resetAddonBtn = document.getElementById("resetAddonBtn");
 const resetAllTextBtn = document.getElementById("resetAllTextBtn");
+
 const clearPromptsBtn = document.getElementById("clearPromptsBtn");
 const exportPromptsBtn = document.getElementById("exportPromptsBtn");
 const importPromptsBtn = document.getElementById("importPromptsBtn");
 
-// LocalStorage key
+const enableTranslationTemplateEl =
+  document.getElementById("enableTranslationTemplate");
+const translationOptionsEl =
+  document.getElementById("translationOptions");
+
 const STORAGE_KEY = "nev_saved_prompts";
 
-// ===== Prompt persistence =====
+// ===== Translation Template =====
+function buildTranslationPrompt() {
+  const outputFormat =
+    document.querySelector('input[name="outputFormat"]:checked').value;
+  const targetLang = document.getElementById("targetLanguage").value;
+  const style =
+    document.querySelector('input[name="style"]:checked').value;
+  const allowSlang = document.getElementById("allowSlang").checked;
+  const allowAbbrev = document.getElementById("allowAbbrev").checked;
 
-// Load saved prompts from localStorage
+  const instructions = [];
+
+  instructions.push(`Translate the following text into ${targetLang}.`);
+
+  instructions.push(
+    style === "faithful"
+      ? "Keep the wording as close to the original as possible."
+      : "Make the translation sound natural in the target language."
+  );
+
+  if (!allowSlang) instructions.push("Do not use slang.");
+  if (!allowAbbrev) instructions.push("Do not use abbreviations.");
+
+  if (outputFormat === "markdown") {
+    instructions.push("Use Markdown formatting.");
+  } else if (outputFormat === "codeblock") {
+    instructions.push("Output the translation inside a Markdown code block.");
+  } else {
+    instructions.push("Output plain text only.");
+  }
+
+  return instructions.join(" ");
+}
+
+function updateBasePromptFromTemplate() {
+  if (!enableTranslationTemplateEl.checked) return;
+  basePromptEl.value = buildTranslationPrompt();
+}
+
+enableTranslationTemplateEl.addEventListener("change", () => {
+  const enabled = enableTranslationTemplateEl.checked;
+  translationOptionsEl.style.display = enabled ? "block" : "none";
+  if (enabled) updateBasePromptFromTemplate();
+});
+
+translationOptionsEl.addEventListener("change", updateBasePromptFromTemplate);
+
+// ===== Prompt storage =====
 function loadPrompts() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 }
 
-// Save prompts to localStorage
 function savePrompts(prompts) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
 }
 
-// Render prompt list in the sidebar
 function renderPromptList() {
   const prompts = loadPrompts();
   promptListEl.innerHTML = "";
@@ -41,13 +88,10 @@ function renderPromptList() {
     const text = document.createElement("div");
     text.className = "prompt-text";
     text.textContent = prompt;
-
-    // Click to reuse prompt
     text.onclick = () => {
       basePromptEl.value = prompt;
     };
 
-    // Delete button
     const del = document.createElement("div");
     del.className = "delete-btn";
     del.textContent = "×";
@@ -64,9 +108,7 @@ function renderPromptList() {
   });
 }
 
-// ===== Clipboard handling =====
-
-// Copy text to clipboard with fallback
+// ===== Clipboard =====
 function copyToClipboard(text) {
   if (navigator.clipboard && window.isSecureContext) {
     return navigator.clipboard.writeText(text);
@@ -81,11 +123,9 @@ function copyToClipboard(text) {
   }
 }
 
-// Copy button behavior
 copyBtn.addEventListener("click", async () => {
   const base = basePromptEl.value.trim();
   const addon = addonPromptEl.value.trim();
-
   if (!base && !addon) return;
 
   const formatted = `${base}
@@ -94,7 +134,6 @@ ${addon}`;
 
   await copyToClipboard(formatted);
 
-  // Save base prompt if not duplicated
   if (base) {
     const prompts = loadPrompts();
     if (!prompts.includes(base)) {
@@ -108,60 +147,38 @@ ${addon}`;
   resultArea.style.display = "block";
 });
 
-// ===== Text reset controls =====
-
-resetBaseBtn.addEventListener("click", () => {
-  basePromptEl.value = "";
-});
-
-resetAddonBtn.addEventListener("click", () => {
-  addonPromptEl.value = "";
-});
-
-resetAllTextBtn.addEventListener("click", () => {
+// ===== Resets =====
+resetBaseBtn.onclick = () => (basePromptEl.value = "");
+resetAddonBtn.onclick = () => (addonPromptEl.value = "");
+resetAllTextBtn.onclick = () => {
   basePromptEl.value = "";
   addonPromptEl.value = "";
-});
+};
 
 // ===== Cache management =====
-
-// Clear all saved prompts
-clearPromptsBtn.addEventListener("click", () => {
-  const ok = confirm("Are you sure you want to delete all saved prompts?");
-  if (!ok) return;
-
+clearPromptsBtn.onclick = () => {
+  if (!confirm("Delete all saved prompts?")) return;
   localStorage.removeItem(STORAGE_KEY);
   renderPromptList();
-});
+};
 
-// Export prompts to local JSON file
-exportPromptsBtn.addEventListener("click", () => {
+exportPromptsBtn.onclick = () => {
   const prompts = loadPrompts();
-  if (prompts.length === 0) {
-    alert("No prompts to export.");
-    return;
-  }
-
-  const data = {
-    exportedAt: new Date().toISOString(),
-    prompts: prompts
-  };
+  if (!prompts.length) return alert("No prompts to export.");
 
   const blob = new Blob(
-    [JSON.stringify(data, null, 2)],
+    [JSON.stringify({ prompts }, null, 2)],
     { type: "application/json" }
   );
-
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = "nev_prompts_backup.json";
   a.click();
   URL.revokeObjectURL(url);
-});
+};
 
-// Import prompts from JSON file
-importPromptsBtn.addEventListener("click", () => {
+importPromptsBtn.onclick = () => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "application/json";
@@ -174,28 +191,18 @@ importPromptsBtn.addEventListener("click", () => {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result);
-
-        if (!Array.isArray(data.prompts)) {
-          throw new Error("Invalid format");
-        }
-
-        const ok = confirm(
-          "This will overwrite existing saved prompts. Continue?"
-        );
-        if (!ok) return;
-
+        if (!Array.isArray(data.prompts)) throw new Error();
+        if (!confirm("Overwrite existing prompts?")) return;
         savePrompts(data.prompts);
         renderPromptList();
       } catch {
-        alert("Invalid backup file.");
+        alert("Invalid file.");
       }
     };
-
     reader.readAsText(file);
   };
 
   input.click();
-});
+};
 
-// Initial render
 renderPromptList();
