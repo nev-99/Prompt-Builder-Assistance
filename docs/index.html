@@ -3,15 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title>nev Prompt Builder (Prototype)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
+    /* ===== Base ===== */
     body {
       margin: 0;
       font-family: sans-serif;
-      display: flex;
       height: 100vh;
       overflow: hidden;
     }
 
+    body.mode-desktop {
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.mode-vertical {
+      display: block;
+      overflow-y: auto;
+    }
+
+    /* ===== Header ===== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    /* ===== Layout container ===== */
+    .layout {
+      display: flex;
+      flex: 1;
+      padding-top: 56px; /* header height */
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    body.mode-vertical .layout {
+      display: block;
+    }
+
+    /* ===== Main ===== */
     .main {
       flex: 1;
       padding: 20px;
@@ -19,6 +67,7 @@
       overflow-y: auto;
     }
 
+    /* ===== Sidebar ===== */
     .sidebar {
       width: 320px;
       border-left: 1px solid #ccc;
@@ -29,17 +78,27 @@
       overflow-x: hidden;
     }
 
+    body.mode-vertical .sidebar {
+      width: auto;
+      border-left: none;
+      border-top: 2px solid #ccc;
+      margin-top: 24px;
+    }
+
+    /* ===== Controls ===== */
     textarea {
       width: 100%;
       height: 120px;
       margin-bottom: 6px;
       box-sizing: border-box;
+      font-size: 14px;
     }
 
     button {
-      padding: 6px 12px;
+      padding: 8px 14px;
       margin-bottom: 12px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .section {
@@ -57,6 +116,7 @@
       height: 12px;
     }
 
+    /* ===== Prompt items ===== */
     .prompt-item {
       display: flex;
       align-items: flex-start;
@@ -95,85 +155,91 @@
     }
   </style>
 </head>
+
 <body>
 
-<div class="main">
+<header>
+  <h1>nev Prompt Builder</h1>
+  <button id="toggleViewModeBtn"></button>
+</header>
 
-  <h2>nev Prompt Builder</h2>
+<div class="layout">
 
-  <!-- Translation Template Builder -->
-  <div class="section">
-    <h4>
-      <label>
-        <input type="checkbox" id="enableTranslationTemplate">
-        Translation Template
-      </label>
-    </h4>
+  <div class="main">
 
-    <div id="translationOptions" style="display:none;">
+    <!-- Translation Template -->
+    <div class="section">
+      <h4>
+        <label>
+          <input type="checkbox" id="enableTranslationTemplate">
+          Translation Template
+        </label>
+      </h4>
 
-      <div class="option-group">
-        <strong>Output format</strong>
-        <label><input type="radio" name="outputFormat" value="plain" checked> Plain text</label>
-        <label><input type="radio" name="outputFormat" value="markdown"> Markdown</label>
-        <label><input type="radio" name="outputFormat" value="codeblock"> Markdown code block</label>
+      <div id="translationOptions" style="display:none;">
+        <div class="option-group">
+          <strong>Output format</strong>
+          <label><input type="radio" name="outputFormat" value="plain" checked> Plain text</label>
+          <label><input type="radio" name="outputFormat" value="markdown"> Markdown</label>
+          <label><input type="radio" name="outputFormat" value="codeblock"> Markdown code block</label>
+        </div>
+
+        <div class="option-group">
+          <strong>Target language</strong>
+          <select id="targetLanguage">
+            <option value="English">English</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Spanish">Spanish</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <strong>Translation style</strong>
+          <label><input type="radio" name="style" value="natural" checked> Natural</label>
+          <label><input type="radio" name="style" value="faithful"> Faithful</label>
+        </div>
+
+        <div class="option-group">
+          <strong>Language flavor</strong>
+          <label><input type="checkbox" id="allowSlang"> Allow slang</label>
+          <label><input type="checkbox" id="allowAbbrev"> Allow abbreviations</label>
+        </div>
       </div>
-
-      <div class="option-group">
-        <strong>Target language</strong>
-        <select id="targetLanguage">
-          <option value="English">English</option>
-          <option value="Japanese">Japanese</option>
-          <option value="Spanish">Spanish</option>
-        </select>
-      </div>
-
-      <div class="option-group">
-        <strong>Translation style</strong>
-        <label><input type="radio" name="style" value="natural" checked> Natural</label>
-        <label><input type="radio" name="style" value="faithful"> Faithful</label>
-      </div>
-
-      <div class="option-group">
-        <strong>Language flavor</strong>
-        <label><input type="checkbox" id="allowSlang"> Allow slang</label>
-        <label><input type="checkbox" id="allowAbbrev"> Allow abbreviations</label>
-      </div>
-
     </div>
+
+    <button id="resetAllTextBtn">Clear All Text Fields</button>
+
+    <h3>Base Prompt</h3>
+    <textarea id="basePrompt"></textarea>
+    <button id="resetBaseBtn">Clear Base Prompt</button>
+
+    <h3>Additional Text</h3>
+    <textarea id="addonPrompt"></textarea>
+    <button id="resetAddonBtn">Clear Additional Text</button>
+
+    <div class="spacer"></div>
+
+    <button id="copyBtn">Copy</button>
+
+    <div id="resultArea" style="display:none;">
+      <div class="result-box">
+        <strong>Copied to clipboard</strong>
+        <div id="resultText"></div>
+      </div>
+    </div>
+
   </div>
 
-  <button id="resetAllTextBtn">Clear All Text Fields</button>
+  <aside class="sidebar">
+    <h3>Saved Prompts</h3>
 
-  <h3>Base Prompt</h3>
-  <textarea id="basePrompt"></textarea>
-  <button id="resetBaseBtn">Clear Base Prompt</button>
+    <button id="exportPromptsBtn">Export Cache</button>
+    <button id="importPromptsBtn">Import Cache</button>
+    <button id="clearPromptsBtn" class="danger">Clear All Saved Prompts</button>
 
-  <h3>Additional Text</h3>
-  <textarea id="addonPrompt"></textarea>
-  <button id="resetAddonBtn">Clear Additional Text</button>
+    <div id="promptList"></div>
+  </aside>
 
-  <div class="spacer"></div>
-
-  <button id="copyBtn">Copy</button>
-
-  <div id="resultArea" style="display:none;">
-    <div class="result-box">
-      <strong>Copied to clipboard</strong>
-      <div id="resultText"></div>
-    </div>
-  </div>
-
-</div>
-
-<div class="sidebar">
-  <h3>Saved Prompts</h3>
-
-  <button id="exportPromptsBtn">Export Cache</button>
-  <button id="importPromptsBtn">Import Cache</button>
-  <button id="clearPromptsBtn" class="danger">Clear All Saved Prompts</button>
-
-  <div id="promptList"></div>
 </div>
 
 <script src="script.js"></script>

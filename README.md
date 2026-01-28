@@ -4,8 +4,9 @@ This is a tool aimed at supporting the creation of prompts.
 ##  Update Log (Latest 3)
 
 ### PromptBuilderAssistance  - Prototype (Updated: 2026.01.28)
+・The web application has been made responsive.
 
-Added a template builder for translation prompt assistance.
+・Added a template builder for translation prompt assistance.
 Supported Languages (currently): English, Japanese, Spanish
 
 ### PromptBuilderAssistance  - Prototype (Updated: 2026.01.27)

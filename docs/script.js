@@ -206,3 +206,34 @@ importPromptsBtn.onclick = () => {
 };
 
 renderPromptList();
+
+// ===== View mode (single toggle button) =====
+const toggleViewModeBtn = document.getElementById("toggleViewModeBtn");
+
+const VIEW_MODE_KEY = "nev_view_mode";
+
+function applyViewMode(mode) {
+  document.body.classList.remove("mode-desktop", "mode-vertical");
+  document.body.classList.add(mode);
+
+  if (mode === "mode-desktop") {
+    toggleViewModeBtn.textContent =
+      "Switch to Vertical Scroll Mode";
+  } else {
+    toggleViewModeBtn.textContent =
+      "Switch to Desktop Mode";
+  }
+
+  localStorage.setItem(VIEW_MODE_KEY, mode);
+}
+
+toggleViewModeBtn.addEventListener("click", () => {
+  const isDesktop =
+    document.body.classList.contains("mode-desktop");
+  applyViewMode(isDesktop ? "mode-vertical" : "mode-desktop");
+});
+
+// Restore mode on load
+const savedMode =
+  localStorage.getItem(VIEW_MODE_KEY) || "mode-desktop";
+applyViewMode(savedMode);
