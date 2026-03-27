@@ -1,247 +1,339 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>nev Prompt Builder (Prototype)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NEV-PROMPTBUILDER - Translate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    /* ===== Base ===== */
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      height: 100vh;
-      overflow: hidden;
-    }
+    <style>
+      /* ===== Base ===== */
 
-    body.mode-desktop {
-      display: flex;
-      flex-direction: column;
-    }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f7f7f8;
+        color: #222;
+      }
 
-    body.mode-vertical {
-      display: block;
-      overflow-y: auto;
-    }
+      /* ===== Header ===== */
 
-    /* ===== Header ===== */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 56px;
-      background: #ffffff;
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      box-sizing: border-box;
-      z-index: 1000;
-    }
+      header {
+        background: white;
+        border-bottom: 1px solid #ddd;
+      }
 
-    header h1 {
-      font-size: 18px;
-      margin: 0;
-    }
+      .header-inner {
+        max-width: 1100px;
+        margin: auto;
+        padding: 18px 20px;
+        font-weight: bold;
+        font-size: 20px;
+        letter-spacing: 1px;
+      }
 
-    /* ===== Layout container ===== */
-    .layout {
-      display: flex;
-      flex: 1;
-      padding-top: 56px; /* header height */
-      height: 100%;
-      box-sizing: border-box;
-    }
+      /* ===== Layout ===== */
 
-    body.mode-vertical .layout {
-      display: block;
-    }
+      .container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 30px 20px;
+      }
 
-    /* ===== Main ===== */
-    .main {
-      flex: 1;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
+      .layout {
+        display: flex;
+        gap: 24px;
+      }
 
-    /* ===== Sidebar ===== */
-    .sidebar {
-      width: 320px;
-      border-left: 1px solid #ccc;
-      padding: 12px;
-      box-sizing: border-box;
-      background: #fafafa;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
+      .main {
+        flex: 1;
+      }
 
-    body.mode-vertical .sidebar {
-      width: auto;
-      border-left: none;
-      border-top: 2px solid #ccc;
-      margin-top: 24px;
-    }
+      .sidebar {
+        width: 300px;
+      }
 
-    /* ===== Controls ===== */
-    textarea {
-      width: 100%;
-      height: 120px;
-      margin-bottom: 6px;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
+      /* ===== Cards ===== */
 
-    button {
-      padding: 8px 14px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      font-size: 14px;
-    }
+      .card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
 
-    .section {
-      border: 1px solid #ddd;
-      padding: 12px;
-      margin-bottom: 16px;
-    }
+      /* ===== Headings ===== */
 
-    .option-group label {
-      display: block;
-      font-size: 14px;
-    }
+      h2 {
+        margin-top: 0;
+      }
 
-    .spacer {
-      height: 12px;
-    }
+      h3 {
+        margin-top: 0;
+      }
 
-    /* ===== Prompt items ===== */
-    .prompt-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-      padding: 8px 4px;
-      border-bottom: 1px solid #ddd;
-      cursor: pointer;
-    }
+      /* ===== Form ===== */
 
-    .prompt-text {
-      flex: 1;
-      white-space: normal;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      font-size: 13px;
-      line-height: 1.4;
-    }
+      textarea {
+        width: 100%;
+        height: 130px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
 
-    .delete-btn {
-      flex-shrink: 0;
-      color: #900;
-      cursor: pointer;
-      font-weight: bold;
-    }
+      select {
+        width: 100%;
+        padding: 6px;
+        margin-top: 6px;
+        margin-bottom: 12px;
+      }
 
-    .result-box {
-      margin-top: 20px;
-      background: #f5f5f5;
-      padding: 12px;
-      border: 1px solid #ccc;
-      white-space: pre-wrap;
-    }
+      /* ===== Buttons ===== */
 
-    .danger {
-      color: #900;
-    }
-  </style>
-</head>
+      button {
+        padding: 8px 14px;
+        border: none;
+        background: #3a6df0;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+      }
 
-<body>
+      button:hover {
+        background: #2c53c7;
+      }
 
-<header>
-  <h1>nev Prompt Builder</h1>
-  <button id="toggleViewModeBtn"></button>
-</header>
+      .button-secondary {
+        background: #eee;
+        color: #333;
+      }
 
-<div class="layout">
+      .button-secondary:hover {
+        background: #ddd;
+      }
 
-  <div class="main">
+      .button-danger {
+        background: #c43;
+      }
 
-    <!-- Translation Template -->
-    <div class="section">
-      <h4>
-        <label>
-          <input type="checkbox" id="enableTranslationTemplate">
-          Translation Template
-        </label>
-      </h4>
+      .button-danger:hover {
+        background: #a22;
+      }
 
-      <div id="translationOptions" style="display:none;">
-        <div class="option-group">
-          <strong>Output format</strong>
-          <label><input type="radio" name="outputFormat" value="plain" checked> Plain text</label>
-          <label><input type="radio" name="outputFormat" value="markdown"> Markdown</label>
-          <label><input type="radio" name="outputFormat" value="codeblock"> Markdown code block</label>
+      /* ===== Option groups ===== */
+
+      .option-group {
+        margin-bottom: 16px;
+      }
+
+      .option-group label {
+        display: block;
+        font-size: 14px;
+      }
+
+      /* ===== Prompt List ===== */
+
+      .prompt-item {
+        display: flex;
+        gap: 8px;
+        padding: 10px 6px;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+      }
+
+      .prompt-text {
+        flex: 1;
+        font-size: 13px;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+
+      .delete-btn {
+        color: #900;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* ===== Result ===== */
+
+      .result-box {
+        margin-top: 20px;
+        background: #f5f5f5;
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        white-space: pre-wrap;
+      }
+
+      /* ===== Responsive ===== */
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="header-inner">NEV-PROMPTBUILDER</div>
+    </header>
+
+    <div class="container">
+      <h2>Translation Prompt Builder</h2>
+
+      <div class="layout">
+        <div class="main">
+          <!-- Translation Template -->
+
+          <div class="card">
+            <h3>
+              <label>
+                <input type="checkbox" id="enableTranslationTemplate" />
+                Use Translation Template
+              </label>
+            </h3>
+
+            <div id="translationOptions" style="display: none">
+              <div class="option-group">
+                <strong>Output format</strong>
+
+                <label>
+                  <input
+                    type="radio"
+                    name="outputFormat"
+                    value="plain"
+                    checked
+                  />
+                  Plain text
+                </label>
+
+                <label>
+                  <input type="radio" name="outputFormat" value="markdown" />
+                  Markdown
+                </label>
+
+                <label>
+                  <input type="radio" name="outputFormat" value="codeblock" />
+                  Markdown code block
+                </label>
+              </div>
+
+              <div class="option-group">
+                <strong>Target language</strong>
+
+                <select id="targetLanguage">
+                  <option value="English">English</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Spanish">Spanish</option>
+                </select>
+              </div>
+
+              <div class="option-group">
+                <strong>Translation style</strong>
+
+                <label>
+                  <input type="radio" name="style" value="natural" checked />
+                  Natural
+                </label>
+
+                <label>
+                  <input type="radio" name="style" value="faithful" />
+                  Faithful
+                </label>
+              </div>
+
+              <div class="option-group">
+                <strong>Language flavor</strong>
+
+                <label>
+                  <input type="checkbox" id="allowSlang" />
+                  Allow slang
+                </label>
+
+                <label>
+                  <input type="checkbox" id="allowAbbrev" />
+                  Allow abbreviations
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Base Prompt -->
+
+          <div class="card">
+            <h3>Base Prompt</h3>
+
+            <textarea id="basePrompt"></textarea>
+
+            <button id="resetBaseBtn" class="button-secondary">
+              Clear Base Prompt
+            </button>
+          </div>
+
+          <!-- Additional Text -->
+
+          <div class="card">
+            <h3>Additional Text</h3>
+
+            <textarea id="addonPrompt"></textarea>
+
+            <button id="resetAddonBtn" class="button-secondary">
+              Clear Additional Text
+            </button>
+          </div>
+
+          <div class="card">
+            <button id="resetAllTextBtn" class="button-secondary">
+              Clear All Text Fields
+            </button>
+
+            <button id="copyBtn">Copy Prompt</button>
+
+            <div id="resultArea" style="display: none">
+              <div class="result-box">
+                <strong>Copied to clipboard</strong>
+
+                <div id="resultText"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="option-group">
-          <strong>Target language</strong>
-          <select id="targetLanguage">
-            <option value="English">English</option>
-            <option value="Japanese">Japanese</option>
-            <option value="Spanish">Spanish</option>
-          </select>
-        </div>
+        <!-- Sidebar -->
 
-        <div class="option-group">
-          <strong>Translation style</strong>
-          <label><input type="radio" name="style" value="natural" checked> Natural</label>
-          <label><input type="radio" name="style" value="faithful"> Faithful</label>
-        </div>
+        <aside class="sidebar">
+          <div class="card">
+            <h3>Saved Prompts</h3>
 
-        <div class="option-group">
-          <strong>Language flavor</strong>
-          <label><input type="checkbox" id="allowSlang"> Allow slang</label>
-          <label><input type="checkbox" id="allowAbbrev"> Allow abbreviations</label>
-        </div>
+            <button id="exportPromptsBtn" class="button-secondary">
+              Export Prompts
+            </button>
+
+            <button id="importPromptsBtn" class="button-secondary">
+              Import Prompts
+            </button>
+
+            <button id="clearPromptsBtn" class="button-danger">
+              Clear All Saved Prompts
+            </button>
+
+            <div id="promptList"></div>
+          </div>
+        </aside>
       </div>
     </div>
 
-    <button id="resetAllTextBtn">Clear All Text Fields</button>
-
-    <h3>Base Prompt</h3>
-    <textarea id="basePrompt"></textarea>
-    <button id="resetBaseBtn">Clear Base Prompt</button>
-
-    <h3>Additional Text</h3>
-    <textarea id="addonPrompt"></textarea>
-    <button id="resetAddonBtn">Clear Additional Text</button>
-
-    <div class="spacer"></div>
-
-    <button id="copyBtn">Copy</button>
-
-    <div id="resultArea" style="display:none;">
-      <div class="result-box">
-        <strong>Copied to clipboard</strong>
-        <div id="resultText"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <aside class="sidebar">
-    <h3>Saved Prompts</h3>
-
-    <button id="exportPromptsBtn">Export Cache</button>
-    <button id="importPromptsBtn">Import Cache</button>
-    <button id="clearPromptsBtn" class="danger">Clear All Saved Prompts</button>
-
-    <div id="promptList"></div>
-  </aside>
-
-</div>
-
-<script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -14,20 +14,20 @@ const clearPromptsBtn = document.getElementById("clearPromptsBtn");
 const exportPromptsBtn = document.getElementById("exportPromptsBtn");
 const importPromptsBtn = document.getElementById("importPromptsBtn");
 
-const enableTranslationTemplateEl =
-  document.getElementById("enableTranslationTemplate");
-const translationOptionsEl =
-  document.getElementById("translationOptions");
+const enableTranslationTemplateEl = document.getElementById(
+  "enableTranslationTemplate",
+);
+const translationOptionsEl = document.getElementById("translationOptions");
 
 const STORAGE_KEY = "nev_saved_prompts";
 
 // ===== Translation Template =====
 function buildTranslationPrompt() {
-  const outputFormat =
-    document.querySelector('input[name="outputFormat"]:checked').value;
+  const outputFormat = document.querySelector(
+    'input[name="outputFormat"]:checked',
+  ).value;
   const targetLang = document.getElementById("targetLanguage").value;
-  const style =
-    document.querySelector('input[name="style"]:checked').value;
+  const style = document.querySelector('input[name="style"]:checked').value;
   const allowSlang = document.getElementById("allowSlang").checked;
   const allowAbbrev = document.getElementById("allowAbbrev").checked;
 
@@ -38,7 +38,7 @@ function buildTranslationPrompt() {
   instructions.push(
     style === "faithful"
       ? "Keep the wording as close to the original as possible."
-      : "Make the translation sound natural in the target language."
+      : "Make the translation sound natural in the target language.",
   );
 
   if (!allowSlang) instructions.push("Do not use slang.");
@@ -166,10 +166,9 @@ exportPromptsBtn.onclick = () => {
   const prompts = loadPrompts();
   if (!prompts.length) return alert("No prompts to export.");
 
-  const blob = new Blob(
-    [JSON.stringify({ prompts }, null, 2)],
-    { type: "application/json" }
-  );
+  const blob = new Blob([JSON.stringify({ prompts }, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -217,23 +216,19 @@ function applyViewMode(mode) {
   document.body.classList.add(mode);
 
   if (mode === "mode-desktop") {
-    toggleViewModeBtn.textContent =
-      "Switch to Vertical Scroll Mode";
+    toggleViewModeBtn.textContent = "Switch to Vertical Scroll Mode";
   } else {
-    toggleViewModeBtn.textContent =
-      "Switch to Desktop Mode";
+    toggleViewModeBtn.textContent = "Switch to Desktop Mode";
   }
 
   localStorage.setItem(VIEW_MODE_KEY, mode);
 }
 
 toggleViewModeBtn.addEventListener("click", () => {
-  const isDesktop =
-    document.body.classList.contains("mode-desktop");
+  const isDesktop = document.body.classList.contains("mode-desktop");
   applyViewMode(isDesktop ? "mode-vertical" : "mode-desktop");
 });
 
 // Restore mode on load
-const savedMode =
-  localStorage.getItem(VIEW_MODE_KEY) || "mode-desktop";
+const savedMode = localStorage.getItem(VIEW_MODE_KEY) || "mode-desktop";
 applyViewMode(savedMode);

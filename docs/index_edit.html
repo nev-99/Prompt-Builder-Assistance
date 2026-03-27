@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEV-PROMPTBUILDER</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f7f7f8;
+        color: #222;
+      }
+
+      /* header */
+
+      header {
+        background: white;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .header-inner {
+        max-width: 1100px;
+        margin: auto;
+        padding: 18px 20px;
+        font-weight: bold;
+        font-size: 20px;
+        letter-spacing: 1px;
+      }
+
+      /* main container */
+
+      .container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 50px 20px;
+      }
+
+      /* intro */
+
+      .intro {
+        margin-bottom: 40px;
+      }
+
+      .intro h1 {
+        margin: 0 0 12px 0;
+        font-size: 36px;
+      }
+
+      .intro p {
+        margin: 0;
+        color: #555;
+        line-height: 1.7;
+      }
+
+      /* section */
+
+      .section {
+        margin-top: 40px;
+      }
+
+      .section h2 {
+        margin-bottom: 20px;
+      }
+
+      /* grid */
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+      }
+
+      /* card */
+
+      .card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 20px;
+        text-decoration: none;
+        color: inherit;
+        transition: 0.2s;
+      }
+
+      .card:hover {
+        background: #f2f5ff;
+        border-color: #3a6df0;
+      }
+
+      .card h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+      }
+
+      .card p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* coming soon */
+
+      .coming {
+        background: #fafafa;
+        border: 1px dashed #ccc;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .coming h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+      }
+
+      .coming p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="header-inner">NEV-PROMPTBUILDER</div>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <h1>What do you want the AI to do?</h1>
+
+        <p>
+          This website helps you create prompts for AI by customizing templates.
+          Choose a task below and build a clear instruction that AI can
+          understand easily.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Start with these</h2>
+
+        <div class="grid">
+          <a class="card" href="translate.html">
+            <h3>Translate text</h3>
+            <p>
+              Create accurate translation prompts with language and style
+              settings.
+            </p>
+          </a>
+
+          <a class="card" href="summarize.html">
+            <h3>Summarize text</h3>
+            <p>Turn long text into short summaries with adjustable detail.</p>
+          </a>
+
+          <a class="card" href="rewrite.html">
+            <h3>Rewrite text</h3>
+            <p>Rewrite text to make it clearer, simpler, or more natural.</p>
+          </a>
+
+          <a class="card" href="explain.html">
+            <h3>Explain something</h3>
+            <p>Ask AI to explain a topic clearly or step by step.</p>
+          </a>
+
+          <a class="card" href="improve-writing.html">
+            <h3>Improve writing</h3>
+            <p>Improve grammar, clarity, and natural expression.</p>
+          </a>
+
+          <a class="card" href="brainstorm.html">
+            <h3>Brainstorm ideas</h3>
+            <p>Generate ideas for projects, content, or plans.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>More tools coming later</h2>
+
+        <div class="grid">
+          <div class="coming">
+            <h3>Write an email</h3>
+            <p>Create professional or casual emails.</p>
+          </div>
+
+          <div class="coming">
+            <h3>Generate text</h3>
+            <p>Generate blog posts, descriptions, or stories.</p>
+          </div>
+
+          <div class="coming">
+            <h3>Ask a question</h3>
+            <p>Build prompts for research and questions.</p>
+          </div>
+
+          <div class="coming">
+            <h3>Social media post</h3>
+            <p>Create posts for social media platforms.</p>
+          </div>
+
+          <div class="coming">
+            <h3>Compare things</h3>
+            <p>Ask AI to compare products, tools, or ideas.</p>
+          </div>
+
+          <div class="coming">
+            <h3>Custom prompt</h3>
+            <p>Create flexible prompts with advanced settings.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
